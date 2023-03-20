@@ -1,74 +1,69 @@
-<?php date_default_timezone_set('America/Sao_Paulo') ?>
-<h1><?php echo"Calendário 3C" ?></h1>
+<?php
+date_default_timezone_set('America/Sao_Paulo');
+$ano = date('Y');
+$meses = array('Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro');
 
-<?php 
-    $ano = date('Y');
-    $meses = array('Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro');
-
-    function linha($semana){
-        echo "<tr>";
-        $negrito = date('d');
-        for ($i = 0; $i <= 6; $i++) {
-            if ((isset($semana[$i])) && ($semana[$i] == date('d'))){
-                echo "<td><strong>{$semana[$i]}</strong></td>";
-            }
-            else if ((isset($semana[$i])) && ($semana[$i] == $semana['0'])){
-                echo "<td><font color='red'>{$semana[$i]}</font></td>";
-            }
-            else if ((isset($semana[$i])) && (isset($semana['6'])) && ($semana[$i] == $semana['6'])){
-                echo "<td><strong>{$semana[$i]}</strong></td>";
-            }
-            else if(isset($semana[$i])){
-                echo "<td>{$semana[$i]}</td>";
-            }
-            else{
-                echo "<td></td>";
-            }
-        }
-        echo "</tr>";
-    }
-    function calendario(){
-        $dia = 1;
-        $semana = array();
-
-        for ($i = 0; $i < date('w', strtotime(date('Y-m-01'))); $i++) {
-            array_push($semana, '');
-        }
-        
-        while ($dia <= 31){
-            array_push($semana, $dia);
-            if (count($semana) == 7){
-                linha($semana);
-                $semana = array();
-            }
-            $dia++;
-        }
-        
-        for ($i = count($semana); $i < 7; $i++) {
-            array_push($semana, '');
-        }
-        
-        linha($semana);
-    }
-
-    function turno(){
-        $horario = date('H:i:s');
-        if ($horario <= 12){
-            echo '<br>Bom dia';
-        }
-        if ($horario > 12 and $horario < 18 ){
-            echo '<br>Boa tarde';
-        }
-        if ($horario > 18){
-            echo '<br>Boa noite';
+function linha($semana, $mes)
+{
+    echo "<tr>";
+    foreach ($semana as $dia) {
+        if ($dia == date('j') && $mes == date('n')) {
+            echo "<td><strong>{$dia}</strong></td>";
+        } else {
+            echo "<td>{$dia}</td>";
         }
     }
-    
-    
+    echo "</tr>";
+}
+
+function calendario($mes, $ano)
+{
+    $dia = 1;
+    $semana = array();
+    $primeiro_dia_mes = date('w', strtotime($ano . '-' . $mes . '-01'));
+    for ($i = 0; $i < $primeiro_dia_mes; $i++) {
+        array_push($semana, '');
+    }
+
+    $ultimo_dia_mes = date('t', strtotime($ano . '-' . $mes . '-01'));
+
+    while ($dia <= $ultimo_dia_mes) {
+        array_push($semana, $dia);
+        if (count($semana) == 7) {
+            linha($semana, $mes);
+            $semana = array();
+        }
+        $dia++;
+    }
+
+    for ($i = count($semana); $i < 7; $i++) {
+        array_push($semana, '');
+    }
+
+    linha($semana, $mes);
+}
+
+function turno()
+{
+    $horario = date('H:i:s');
+    if ($horario <= 12) {
+        echo '<br>Bom dia';
+    }
+    if ($horario > 12 and $horario < 18) {
+        echo '<br>Boa tarde';
+    }
+    if ($horario > 18) {
+        echo '<br>Boa noite';
+    }
+}
+
 ?>
+
+<h1>Calendário</h1>
+
 <table border="1">
-    <?php 
-    for ($i=0; $i < 12; $i++) { 
+    <?php
+    for ($i = 0; $i < 12; $i++) {
         echo "<tr><th colspan='7'>" . $meses[$i] . "</th></tr>";
         echo "<tr>
         <th>Dom</th>
@@ -77,17 +72,14 @@
         <th>Qua</th>
         <th>Qui</th>
         <th>Sex</th>
-        <th>Sáb</th> 
-        </tr>"; 
-        calendario();
+        <th>Sáb</th>
+    </tr>";
+        calendario($i+1, $ano);
     }
-        ?>
-    
+    ?>
 </table>
 
 <?php 
     echo "Agora são " . date('H:i:s');
-?>
-<?php 
-    turno();
+    turno(); 
 ?>
