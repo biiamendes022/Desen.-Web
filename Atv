@@ -1,25 +1,16 @@
-<?php date_default_timezone_set('America/Sao_Paulo') ?>
-<h1><?php echo "Calendário" ?></h1>
-
 <?php
+date_default_timezone_set('America/Sao_Paulo');
 $ano = date('Y');
 $meses = array('Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro');
 
-function linha($semana)
+function linha($semana, $mes)
 {
     echo "<tr>";
-    $negrito = date('d');
-    for ($i = 0; $i <= 6; $i++) {
-        if ((isset($semana[$i])) && ($semana[$i] == date('d'))) {
-            echo "<td><strong>{$semana[$i]}</strong></td>";
-        } else if ((isset($semana[$i])) && ($semana[$i] == $semana['0'])) {
-            echo "<td><font color='red'>{$semana[$i]}</font></td>";
-        } else if ((isset($semana[$i])) && (isset($semana['6'])) && ($semana[$i] == $semana['6'])) {
-            echo "<td><strong>{$semana[$i]}</strong></td>";
-        } else if (isset($semana[$i])) {
-            echo "<td>{$semana[$i]}</td>";
+    foreach ($semana as $dia) {
+        if ($dia == date('j') && $mes == date('n')) {
+            echo "<td><strong>{$dia}</strong></td>";
         } else {
-            echo "<td></td>";
+            echo "<td>{$dia}</td>";
         }
     }
     echo "</tr>";
@@ -39,7 +30,7 @@ function calendario($mes, $ano)
     while ($dia <= $ultimo_dia_mes) {
         array_push($semana, $dia);
         if (count($semana) == 7) {
-            linha($semana);
+            linha($semana, $mes);
             $semana = array();
         }
         $dia++;
@@ -49,7 +40,7 @@ function calendario($mes, $ano)
         array_push($semana, '');
     }
 
-    linha($semana);
+    linha($semana, $mes);
 }
 
 function turno()
@@ -66,8 +57,10 @@ function turno()
     }
 }
 
-
 ?>
+
+<h1>Calendário</h1>
+
 <table border="1">
     <?php
     for ($i = 0; $i < 12; $i++) {
@@ -75,7 +68,7 @@ function turno()
         echo "<tr>
         <th>Dom</th>
         <th>Seg</th>
-		<th>Ter</th>
+        <th>Ter</th>
         <th>Qua</th>
         <th>Qui</th>
         <th>Sex</th>
@@ -85,7 +78,8 @@ function turno()
     }
     ?>
 </table>
+
 <?php 
     echo "Agora são " . date('H:i:s');
+    turno(); 
 ?>
-<?php turno(); ?>
